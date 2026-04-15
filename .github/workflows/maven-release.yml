@@ -21,6 +21,8 @@ on:
         required: true
       GPG_PASS_PHRASE:
         required: true
+      MAVEN_GPG_PASSPHRASE:
+        required: true
       DEPLOY_PRIVATE_KEY:
         required: true
       ARTIFACTORY_USERNAME:
@@ -74,6 +76,7 @@ jobs:
         ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
         ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASS_PHRASE }}
+        MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASS_PHRASE }}
         NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
