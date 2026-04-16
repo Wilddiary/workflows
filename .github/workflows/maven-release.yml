@@ -21,8 +21,6 @@ on:
         required: true
       GPG_PASS_PHRASE:
         required: true
-      MAVEN_GPG_PASSPHRASE:
-        required: true
       DEPLOY_PRIVATE_KEY:
         required: true
       ARTIFACTORY_USERNAME:
@@ -43,12 +41,15 @@ jobs:
       with:
         java-version: '21'
         distribution: 'temurin'
-        gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-        gpg-passphrase: GPG_PASSPHRASE
         server-id: ${{ inputs.ARTIFACTORY_SERVER_ID }}
         server-username: ARTIFACTORY_USERNAME
         server-password: ARTIFACTORY_PASSWORD
         cache: maven
+
+    - name: Import GPG key
+      run: |
+        echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+        gpg --list-secret-keys --keyid-format LONG
 
     - name: Setup SSH
       # You may pin to the exact commit or the version.
@@ -75,7 +76,6 @@ jobs:
       env:
         ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
         ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
-        GPG_PASSPHRASE: ${{ secrets.GPG_PASS_PHRASE }}
         MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASS_PHRASE }}
         NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
 
