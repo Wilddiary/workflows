@@ -21,8 +21,6 @@ on:
         required: true
       GPG_PASS_PHRASE:
         required: true
-      MAVEN_GPG_PASSPHRASE:
-        required: true
       DEPLOY_PRIVATE_KEY:
         required: true
       ARTIFACTORY_USERNAME:
