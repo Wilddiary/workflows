@@ -12,10 +12,6 @@ on:
   push:
     branches: [ "main" ]
   workflow_call:
-    inputs:
-      ARTIFACTORY_SERVER_ID:
-        required: true
-        type: string
     secrets:
       GPG_PRIVATE_KEY:
         required: true
@@ -23,9 +19,9 @@ on:
         required: true
       DEPLOY_PRIVATE_KEY:
         required: true
-      ARTIFACTORY_USERNAME:
+      CENTRAL_USERNAME:
         required: true
-      ARTIFACTORY_PASSWORD:
+      CENTRAL_TOKEN:
         required: true
       NVD_API_KEY:
         required: true
@@ -43,9 +39,9 @@ jobs:
       with:
         java-version: '21'
         distribution: 'temurin'
-        server-id: ${{ inputs.ARTIFACTORY_SERVER_ID }}
-        server-username: ARTIFACTORY_USERNAME
-        server-password: ARTIFACTORY_PASSWORD
+        server-id: central
+        server-username: CENTRAL_USERNAME
+        server-password: CENTRAL_TOKEN
         cache: maven
 
     - name: Import GPG key
@@ -62,8 +58,8 @@ jobs:
        git fetch --all
        ./mvnw --batch-mode --no-transfer-progress release:clean release:prepare release:perform -Ddependency-check.skip=true --file pom.xml
       env:
-        ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
-        ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+        CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+        CENTRAL_TOKEN: ${{ secrets.CENTRAL_TOKEN }}
         # maven-gpg-plugin 3.x reads MAVEN_GPG_PASSPHRASE; gpg / older paths may use GPG_PASSPHRASE
         MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASS_PHRASE }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASS_PHRASE }}
