@@ -52,11 +52,16 @@ jobs:
         gpg --list-secret-keys --keyid-format LONG
 
     - name: Setup SSH deploy key
+      env:
+        DEPLOY_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
       run: |
         mkdir -p ~/.ssh
-        echo "${{ secrets.DEPLOY_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+        # Write key via env var — avoids exposing it as a CLI argument in /proc/<pid>/cmdline
+        printenv DEPLOY_PRIVATE_KEY > ~/.ssh/deploy_key
         chmod 600 ~/.ssh/deploy_key
-        printf 'Host github.com\n  HostName github.com\n  User git\n  IdentityFile ~/.ssh/deploy_key\n  IdentitiesOnly yes\n  StrictHostKeyChecking no\n' >> ~/.ssh/config
+        # Pin GitHub's known host keys — prevents MITM instead of disabling host verification
+        ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+        printf 'Host github.com\n  HostName github.com\n  User git\n  IdentityFile ~/.ssh/deploy_key\n  IdentitiesOnly yes\n' >> ~/.ssh/config
         ssh -T git@github.com 2>&1 || true
 
     - name: Build with Maven
