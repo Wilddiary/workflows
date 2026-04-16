@@ -55,7 +55,7 @@ jobs:
        git config --global user.name "GitHub CI"
        git checkout -B main
        git tag --delete $(git tag)
-       git fetch --all
+       git pull --rebase origin main
        ./mvnw --batch-mode --no-transfer-progress release:clean release:prepare release:perform -Ddependency-check.skip=true --file pom.xml
       env:
         CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
