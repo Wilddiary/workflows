@@ -60,7 +60,7 @@ jobs:
        git checkout -B main
        git tag --delete $(git tag)
        git fetch --all
-       ./mvnw --batch-mode --no-transfer-progress clean release:prepare release:perform -Ddependency-check.skip=true --file pom.xml
+       ./mvnw --batch-mode --no-transfer-progress release:clean release:prepare release:perform -Ddependency-check.skip=true --file pom.xml
       env:
         ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
         ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
