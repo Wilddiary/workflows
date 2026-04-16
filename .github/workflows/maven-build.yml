@@ -27,15 +27,19 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
+    - name: Get week for NVD cache key
+      id: get-date
+      run: echo "week=$(date -u '+%Y-%W')" >> $GITHUB_OUTPUT
+
     - name: Cache NVD data
       uses: actions/cache@v4
       with:
         path: ~/.m2/dependency-check-data
-        key: nvd-${{ runner.os }}-${{ github.sha }}
+        key: nvd-${{ runner.os }}-${{ steps.get-date.outputs.week }}
         restore-keys: nvd-${{ runner.os }}-
 
     - name: Build with Maven
-      run: ./mvnw -B verify --file pom.xml
+      run: ./mvnw -B verify -Dgpg.skip=true --file pom.xml
       env:
         NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
 
