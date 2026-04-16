@@ -1,4 +1,5 @@
 # Fast CI: no OWASP/NVD on every run (see maven-dependency-check.yml for full scan).
+# Keep -Ddependency-check.skip=true: without it, verify would hit the NVD API and needs NVD_API_KEY + cache.
 
 name: Build
 
