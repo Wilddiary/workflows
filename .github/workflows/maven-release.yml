@@ -56,14 +56,7 @@ jobs:
         mkdir -p ~/.ssh
         echo "${{ secrets.DEPLOY_PRIVATE_KEY }}" > ~/.ssh/deploy_key
         chmod 600 ~/.ssh/deploy_key
-        cat >> ~/.ssh/config <<EOF
-        Host github.com
-          HostName github.com
-          User git
-          IdentityFile ~/.ssh/deploy_key
-          IdentitiesOnly yes
-          StrictHostKeyChecking no
-        EOF
+        printf 'Host github.com\n  HostName github.com\n  User git\n  IdentityFile ~/.ssh/deploy_key\n  IdentitiesOnly yes\n  StrictHostKeyChecking no\n' >> ~/.ssh/config
         ssh -T git@github.com 2>&1 || true
 
     - name: Build with Maven
