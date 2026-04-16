@@ -51,19 +51,20 @@ jobs:
         echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
         gpg --list-secret-keys --keyid-format LONG
 
-    - name: Setup SSH
-      # You may pin to the exact commit or the version.
-      # uses: prx0/setup-ssh-config@20710468a2f4df28f8b6d885f2b9cf34b3d0ccb7
-      uses: prx0/setup-ssh-config@v1
-      with:
-        # ssh private key to contact the server with the public key
-        private-key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
-        # host for the ssh config file
-        host: github.com
-        # hostname for the ssh config file
-        hostname: github.com
-        # user for the ssh config file
-        user: git
+    - name: Setup SSH deploy key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.DEPLOY_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+        chmod 600 ~/.ssh/deploy_key
+        cat >> ~/.ssh/config <<EOF
+        Host github.com
+          HostName github.com
+          User git
+          IdentityFile ~/.ssh/deploy_key
+          IdentitiesOnly yes
+          StrictHostKeyChecking no
+        EOF
+        ssh -T git@github.com 2>&1 || true
 
     - name: Build with Maven
       run: |
