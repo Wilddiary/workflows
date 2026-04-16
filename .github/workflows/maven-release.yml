@@ -68,6 +68,9 @@ jobs:
       run: |
        git config --global user.email "git@github.com"
        git config --global user.name "GitHub CI"
+       # actions/checkout sets origin to HTTPS; switch to SSH so maven-release-plugin's git push uses the deploy key
+       SSH_URL=$(git remote get-url origin | sed 's|https://github.com/|git@github.com:|')
+       git remote set-url origin "$SSH_URL"
        git checkout -B main
        git tag --delete $(git tag)
        git fetch --all
